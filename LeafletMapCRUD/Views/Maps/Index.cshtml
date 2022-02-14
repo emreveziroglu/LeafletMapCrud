@@ -1,0 +1,143 @@
+﻿@model IEnumerable<LeafletMapCRUD.Models.Map>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LocationName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LatutateLong)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LatutateLang)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LocationName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LatutateLong)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LatutateLang)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.css">
+
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.Default.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="/map3/style.css">
+     <div id="map" class="map"></div>
+    <style>
+    .sunny, .cloudy, .rainy {
+        display: block;
+        margin: 30px auto 10px;
+        width: 128px;
+        height: 128px;
+        background: transparent no-repeat 0 0;
+    }
+    .cloudy{
+        background-position: -128px 0;
+    }
+    .rainy{
+        background-position: -256px 0;
+    }
+    .weather {
+        margin: 0 auto 30px;
+        text-align: center;
+    }
+    #tabstrip p {
+        font-weight: lighter;
+        font-size: 5em;
+        line-height: 1;
+        padding: 0 0 0 30px;
+        margin: 0;
+    }
+    #tabstrip p span {
+        background: none;
+        padding-left: 5px;
+        font-size: .3em;
+        vertical-align: top;
+    }
+    #tabstrip p {
+        margin: 0;
+        padding: 0;
+    }
+    .leaflet-routing-alt h2 {
+        font-size: 10px;
+    }
+    .map{
+        height:400px !important;
+    }
+</style>
+<script>
+
+let config = {
+  minZoom: 4,
+  maxZoom: 18,
+};
+const zoom = 8;
+const lat = 40.732540;
+const lng = 31.6082;
+let points = [
+        @foreach (var item in Model)
+        {
+         <text> [</text>@item.LatutateLang  <text>,</text> @item.LatutateLong<text>,</text> <text>"@item.LocationName"</text><text>],</text>
+        }
+       
+];
+
+const map = L.map("map", config).setView([lat, lng], zoom);
+
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution:
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ee',
+}).addTo(map);
+
+let markers = L.markerClusterGroup();
+
+for (let i = 0; i < points.length; i++) {
+  const [lat, lng, title] = points[i];
+
+  let marker = L.marker(new L.LatLng(lat, lng)).bindPopup(title);
+  markers.addLayer(marker);
+}
+
+map.addLayer(markers);
+
+</script>
+</table>
