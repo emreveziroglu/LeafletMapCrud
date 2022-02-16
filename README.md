@@ -6,7 +6,7 @@ Project Structure
 * .Net 6 Core
 *MSSQL
 ________
-My name
+Transactions
 *Install LefletMap.bak to MSSQL.
 *Run the project in VS.
 
